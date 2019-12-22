@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, uic
+from PyQt5.QtCore import QRect, QPropertyAnimation
 import sys
 
 
@@ -50,10 +51,27 @@ class Ui(QtWidgets.QMainWindow):
 
         # output init.
         self.output = self.findChild(QtWidgets.QLabel, 'output')
+
         self.show()
+
+        # assign numpadgeometry value for animation
+        self.numpadgeometry = []
+        for i in range(0,13):
+            self.numpadgeometry.append(self.numpad[i].geometry())
     def numpadPress(self,num):
-        self.numpad[num].setStyleSheet("background-color: rgb(50, 50, 50);\ncolor: rgb(0, 0, 0);")
+        self.anim = QPropertyAnimation(self.numpad[num],b"geometry")
+        self.anim.setStartValue(QRect(self.numpad[num].geometry()))
+        self.anim.setEndValue(QRect(self.numpad[num].geometry()).adjusted(5,5,-5,-5))
+        self.anim.setDuration(50)
+        self.anim.start()
+        self.numpad[num].setStyleSheet("background-color: rgb(200, 200, 200);\ncolor: rgb(0, 0, 0);")
     def numpadRelease(self,num):
+        self.anim = QPropertyAnimation(self.numpad[num],b"geometry")
+        self.anim.setStartValue(QRect(self.numpad[num].geometry()))
+        self.anim.setEndValue(QRect(self.numpadgeometry[num]))
+        self.anim.setDuration(100)
+        self.anim.start()
+
         self.numpad[num].setStyleSheet(self.numpadDefaultStyleSheet)
         if self.output.text() == "0":
             self.output.setText(str(num))
@@ -63,6 +81,11 @@ class Ui(QtWidgets.QMainWindow):
     def num0press(self, event):
         self.numpadPress(0)
     def num0release(self,event):
+        self.anim = QPropertyAnimation(self.numpad[0],b"geometry")
+        self.anim.setStartValue(QRect(self.numpad[0].geometry()))
+        self.anim.setEndValue(QRect(self.numpadgeometry[0]))
+        self.anim.setDuration(100)
+        self.anim.start()
         self.numpad[0].setStyleSheet(self.numpadDefaultStyleSheet)
         if self.output.text() != "0":
             self.output.setText(self.output.text() + "0")
@@ -113,21 +136,51 @@ class Ui(QtWidgets.QMainWindow):
         self.numpadRelease(9)
     # 'dot'
     def num10press(self, event):
-        self.numpadPress(10)
+        self.anim = QPropertyAnimation(self.numpad[10],b"geometry")
+        self.anim.setStartValue(QRect(self.numpad[10].geometry()))
+        self.anim.setEndValue(QRect(self.numpad[10].geometry()).adjusted(5,5,-5,-5))
+        self.anim.setDuration(50)
+        self.anim.start()
+        self.numpad[10].setStyleSheet("background-color: rgb(200, 200, 200);\ncolor: rgb(0, 0, 0);")
     def num10release(self,event):
+        self.anim = QPropertyAnimation(self.numpad[10],b"geometry")
+        self.anim.setStartValue(QRect(self.numpad[10].geometry()))
+        self.anim.setEndValue(QRect(self.numpadgeometry[10]))
+        self.anim.setDuration(100)
+        self.anim.start()
         self.numpad[10].setStyleSheet(self.numpadDefaultStyleSheet)
         if "." not in self.output.text():
             self.output.setText(self.output.text() + ".")
     # 'clear'
     def num11press(self, event):
-        self.numpad[11].setStyleSheet("background-color: rgb(50, 0, 0);\ncolor: rgb(50, 50, 50);")
+        self.anim = QPropertyAnimation(self.numpad[11],b"geometry")
+        self.anim.setStartValue(QRect(self.numpad[11].geometry()))
+        self.anim.setEndValue(QRect(self.numpad[11].geometry()).adjusted(5,5,-5,-5))
+        self.anim.setDuration(50)
+        self.anim.start()
+        self.numpad[11].setStyleSheet("background-color: rgb(200, 0, 0);\ncolor: rgb(200, 200, 200);")
     def num11release(self,event):
+        self.anim = QPropertyAnimation(self.numpad[11],b"geometry")
+        self.anim.setStartValue(QRect(self.numpad[11].geometry()))
+        self.anim.setEndValue(QRect(self.numpadgeometry[11]))
+        self.anim.setDuration(100)
+        self.anim.start()
         self.numpad[11].setStyleSheet(self.numpadClearDefaultStyleSheet)
         self.output.setText("0")
     # 'enter'
     def num12press(self, event):
-        self.numpad[12].setStyleSheet("background-color: rgb(47, 0, 0);\ncolor: rgb(50, 50, 50);")
+        self.anim = QPropertyAnimation(self.numpad[12],b"geometry")
+        self.anim.setStartValue(QRect(self.numpad[12].geometry()))
+        self.anim.setEndValue(QRect(self.numpad[12].geometry()).adjusted(5,5,-5,-5))
+        self.anim.setDuration(50)
+        self.anim.start()
+        self.numpad[12].setStyleSheet("background-color: rgb(197, 60, 0);\ncolor: rgb(200, 200, 200);")
     def num12release(self,event):
+        self.anim = QPropertyAnimation(self.numpad[12],b"geometry")
+        self.anim.setStartValue(QRect(self.numpad[12].geometry()))
+        self.anim.setEndValue(QRect(self.numpadgeometry[12]))
+        self.anim.setDuration(100)
+        self.anim.start()
         self.numpad[12].setStyleSheet(self.numpadEnterDefaultStyleSheet)
         self.controlStack.setCurrentIndex(1)
         # WIP
