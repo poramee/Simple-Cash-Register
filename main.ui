@@ -292,7 +292,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page_input">
       <widget class="QWidget" name="gridLayoutWidget">
@@ -3482,6 +3482,14 @@ background-color: rgba(255, 0, 15, 0);</string>
         <number>-1</number>
        </property>
       </widget>
+      <zorder>icon_3</zorder>
+      <zorder>icon_2</zorder>
+      <zorder>icon</zorder>
+      <zorder>paymentMethodLabel</zorder>
+      <zorder>cashbn</zorder>
+      <zorder>cardbn</zorder>
+      <zorder>othersbn</zorder>
+      <zorder>cancelbn</zorder>
      </widget>
      <widget class="QWidget" name="page_cash">
       <widget class="QLabel" name="bn20">
@@ -4045,7 +4053,7 @@ background-color: rgba(255, 255, 255, 0);</string>
         <rect>
          <x>610</x>
          <y>550</y>
-         <width>151</width>
+         <width>181</width>
          <height>61</height>
         </rect>
        </property>
@@ -4074,7 +4082,7 @@ background-color: rgba(255, 0, 15, 0);</string>
         <number>-1</number>
        </property>
       </widget>
-      <widget class="QLabel" name="finishbn">
+      <widget class="QLabel" name="finishbn_cash">
        <property name="geometry">
         <rect>
          <x>790</x>
@@ -4092,14 +4100,14 @@ background-color: rgba(255, 0, 15, 0);</string>
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(146, 255, 78);
-background-color: rgba(255, 0, 15, 0);</string>
+        <string notr="true">color: rgb(80,216,144);
+background-color:rgba(0, 255, 0, 0);</string>
        </property>
        <property name="text">
         <string>FINISH</string>
        </property>
        <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        <set>Qt::AlignCenter</set>
        </property>
        <property name="margin">
         <number>0</number>
@@ -4369,7 +4377,7 @@ background-color: rgba(0, 0, 0, 128);</string>
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="receiveCnt_2">
+      <widget class="QLabel" name="changeCnt">
        <property name="geometry">
         <rect>
          <x>550</x>
@@ -4394,6 +4402,95 @@ background-color: rgba(0, 0, 0, 128);</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="page_complete_cash">
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>360</x>
+         <y>30</y>
+         <width>300</width>
+         <height>300</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>Resources/tick.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="finishbn_cash_2">
+       <property name="geometry">
+        <rect>
+         <x>300</x>
+         <y>370</y>
+         <width>421</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Avenir Next</family>
+         <pointsize>36</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(80,216,144);
+background-color:rgba(0, 255, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>SALE RECORDED</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="indent">
+        <number>-1</number>
+       </property>
+      </widget>
+      <widget class="QLabel" name="gobackcount">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>470</y>
+         <width>671</width>
+         <height>61</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Avenir Next</family>
+         <pointsize>14</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);
+background-color:rgba(0, 255, 0, 0);</string>
+       </property>
+       <property name="text">
+        <string>GOING BACK IN 2 SECONDS</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="indent">
+        <number>-1</number>
        </property>
       </widget>
      </widget>
