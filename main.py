@@ -1,7 +1,10 @@
 from PyQt5 import QtTest, QtWidgets, uic
 from PyQt5.QtCore import QRect, QPropertyAnimation
+from datetime import datetime
 import sys
-
+import csv
+import json
+import os
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
@@ -130,8 +133,20 @@ class Ui(QtWidgets.QMainWindow):
         self.finishbn_cash.mousePressEvent = self.finishbn_cashpress
         self.finishbn_cash.mouseReleaseEvent = self.finishbn_cashrelease
 
+        # controlStack card page init.
+        self.receiveCnt_card = self.findChild(QtWidgets.QLabel, 'receiveCnt_card')
+
         # controlStack finish page init.
         self.gobackcount = self.findChild(QtWidgets.QLabel, 'gobackcount')
+
+        #controlStack newSession page init.
+        self.newsession = self.findChild(QtWidgets.QLabel, 'newsession')
+        self.newsession.mousePressEvent = self.newsessionpress
+        self.newsession.mouseReleaseEvent = self.newsessionrelease
+
+
+        # read settings
+        self.readSettings()
 
         # set controlStack
         self.controlStack.setCurrentIndex(0)
@@ -143,6 +158,12 @@ class Ui(QtWidgets.QMainWindow):
         self.numpadgeometry = []
         for i in range(0,13):
             self.numpadgeometry.append(self.numpad[i].geometry())
+
+        # set controlStack to 'start a new session' page if a session wasn't found.
+        if not os.path.exists(self.settingsData[0]['save_dir'] + ".current"):
+            self.controlStack.setCurrentIndex(6)
+        else:
+            self.loadSessionFile()
         
         # assign bn,c geometry for animation
         self.bn20geometry = self.bn20.geometry()
@@ -154,7 +175,25 @@ class Ui(QtWidgets.QMainWindow):
         self.c2geometry = self.c2.geometry()
         self.c5geometry = self.c5.geometry()
         self.c10geometry = self.c10.geometry()
-    
+
+    def readSettings(self):
+        if not os.path.exists("settings.json"):
+            temp = open("settings.json","w")
+            path = os.path.expanduser("~/Simple Cash Register/")
+            print(path)
+            data = {}
+            data['settings'] = []
+            data['settings'].append({
+                'save_dir': path
+            })
+            json.dump(data,temp)
+            temp.close()
+        settings = open("settings.json","r")
+        data = json.load(settings)
+        self.settingsData = data['settings']
+        if not os.path.exists(self.settingsData[0]['save_dir']):
+            os.makedirs(self.settingsData[0]['save_dir'])
+
     def numpadPress(self,num):
         self.anim = QPropertyAnimation(self.numpad[num],b"geometry")
         self.anim.setStartValue(QRect(self.numpad[num].geometry()))
@@ -321,6 +360,8 @@ class Ui(QtWidgets.QMainWindow):
         self.setBtnPress(self.cardbn)
     def cardbnrelease(self,event):
         self.setBtnRelease(self.cardbn)
+        self.controlStack.setCurrentIndex(3)
+        self.receiveCnt_card.setText(self.output.text())
     
     def othersbnpress(self,event):
         self.setBtnPress(self.othersbn)
@@ -519,10 +560,49 @@ class Ui(QtWidgets.QMainWindow):
         self.finishbn_cash.setStyleSheet("color: rgb(80,216,144);background-color:rgba(0, 255, 0, 150);")
     def finishbn_cashrelease(self,event):
         self.finishbn_cash.setStyleSheet("color: rgb(80,216,144);background-color:rgba(0, 255, 0, 0);")
-        #SAVE
+        self.save('cash',float(self.output.text()),float(self.receiveCnt.text()))
         self.goToFinishPage()
+
+    def newsessionpress(self,event):
+        self.newsession.setStyleSheet("color: rgb(54, 200, 255);background-color: rgba(0, 139, 255, 150);")
+    def newsessionrelease(self,event):
+        self.newsession.setStyleSheet("color: rgb(54, 200, 255);background-color: rgba(0, 139, 255, 0);")
+        self.createSessionFile()
+        self.output.setText("0")
+        self.controlStack.setCurrentIndex(0)
+
+    def createSessionFile(self):
+        os.makedirs(self.settingsData[0]['save_dir'] + ".current")
+        file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","a")
+        writer = csv.writer(file,delimiter = ',')
+        dateTimeObj = datetime.now()
+        timestampDate = dateTimeObj.strftime("%d-%b-%Y")
+        timestampTime = dateTimeObj.strftime("%H:%M:%S")
+        writer.writerow(['Date','Time','Type','Total','Receive'])
+        writer.writerow([timestampDate,timestampTime,'sessionTimeStamp','0','0'])
+        self.sessionTimeLabel.setText("Session: " + timestampDate + " at " + timestampTime)
+        file.close()
+    def loadSessionFile(self):
+        file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","r")
+        reader = csv.reader(file,delimiter = ',')
+        rowCnt = 0
+        for row in reader:
+            if rowCnt == 1:
+                self.sessionTimeLabel.setText("Session: " + row[0] + " at " + row[1])
+            rowCnt += 1
+        file.close()
+
+    def save(self,typeName,totalAmt,receiveAmt):
+        file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","a")
+        writer = csv.writer(file,delimiter = ',')
+        dateTimeObj = datetime.now()
+        timestampDate = dateTimeObj.strftime("%d-%b-%Y")
+        timestampTime = dateTimeObj.strftime("%H:%M:%S")
+        writer.writerow([timestampDate,timestampTime,typeName,totalAmt,receiveAmt])
+        file.close()
+
     def goToFinishPage(self):
-        self.controlStack.setCurrentIndex(3)
+        self.controlStack.setCurrentIndex(5)
         self.output.setStyleSheet("color: rgb(255, 255, 255); background-color:rgba(80,216,144, 255);")
         self.gobackcount.setText("GOING BACK IN 2 SECONDS")
         QtTest.QTest.qWait(1000)
@@ -544,7 +624,7 @@ class Ui(QtWidgets.QMainWindow):
         cnt += int(self.ccnt5.text()) * 5
         cnt += int(self.ccnt10.text()) * 10
         self.receiveCnt.setText(str(cnt))
-        self.changeCnt.setText(str(cnt - int(self.output.text())))
+        self.changeCnt.setText(str(cnt - float(self.output.text())))
 
 
 
