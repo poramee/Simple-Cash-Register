@@ -51,17 +51,73 @@ class Ui(QtWidgets.QMainWindow):
 
         # output init.
         self.output = self.findChild(QtWidgets.QLabel, 'output')
+        self.output.setMargin(20)
 
+        # totalLabel init.
+        self.totalLabel = self.findChild(QtWidgets.QLabel, 'totalLabel')
+        self.totalLabel.hide()
+
+        # controlStack 2nd page init
+        self.cashbn = self.findChild(QtWidgets.QLabel, 'cashbn')
+        self.cardbn = self.findChild(QtWidgets.QLabel, 'cardbn')
+        self.othersbn = self.findChild(QtWidgets.QLabel, 'othersbn')
+        self.cancelbn = self.findChild(QtWidgets.QLabel, 'cancelbn')
+
+        self.cashbn.mousePressEvent = self.cashbnpress
+        self.cashbn.mouseReleaseEvent = self.cashbnrelease
+        self.cardbn.mousePressEvent = self.cardbnpress
+        self.cardbn.mouseReleaseEvent = self.cardbnrelease
+        self.othersbn.mousePressEvent = self.othersbnpress
+        self.othersbn.mouseReleaseEvent = self.othersbnrelease
+        self.cancelbn.mousePressEvent = self.cancelbnpress
+        self.cancelbn.mouseReleaseEvent = self.cancelbnrelease
+
+        # controlStack 3rd page init
+        self.bn20 = self.findChild(QtWidgets.QLabel, 'bn20')
+        self.bn50 = self.findChild(QtWidgets.QLabel, 'bn50')
+        self.bn100 = self.findChild(QtWidgets.QLabel, 'bn100')
+        self.bn500 = self.findChild(QtWidgets.QLabel, 'bn500')
+        self.bn1000 = self.findChild(QtWidgets.QLabel, 'bn1000')
+        self.c1 = self.findChild(QtWidgets.QLabel, 'c1')
+        self.c2 = self.findChild(QtWidgets.QLabel, 'c2')
+        self.c5 = self.findChild(QtWidgets.QLabel, 'c5')
+        self.c10 = self.findChild(QtWidgets.QLabel, 'c10')
+
+        self.bn20.mousePressEvent = self.bn20press
+        self.bn20.mouseReleaseEvent = self.bn20release
+        self.bn50.mousePressEvent = self.bn50press
+        self.bn50.mouseReleaseEvent = self.bn50release
+        self.bn100.mousePressEvent = self.bn100press
+        self.bn100.mouseReleaseEvent = self.bn100release
+        self.bn500.mousePressEvent = self.bn500press
+        self.bn500.mouseReleaseEvent = self.bn500release
+        self.bn1000.mousePressEvent = self.bn1000press
+        self.bn1000.mouseReleaseEvent = self.bn1000release
+        self.c1.mousePressEvent = self.c1press
+        self.c1.mouseReleaseEvent = self.c1release
+        self.c2.mousePressEvent = self.c2press
+        self.c2.mouseReleaseEvent = self.c2release
+        self.c5.mousePressEvent = self.c5press
+        self.c5.mouseReleaseEvent = self.c5release
+        self.c10.mousePressEvent = self.c10press
+        self.c10.mouseReleaseEvent = self.c10release
+        # set controlStack
+        self.controlStack.setCurrentIndex(0)
+
+        # show windows
         self.show()
 
         # assign numpadgeometry value for animation
         self.numpadgeometry = []
         for i in range(0,13):
             self.numpadgeometry.append(self.numpad[i].geometry())
+    
+    
+    
     def numpadPress(self,num):
         self.anim = QPropertyAnimation(self.numpad[num],b"geometry")
         self.anim.setStartValue(QRect(self.numpad[num].geometry()))
-        self.anim.setEndValue(QRect(self.numpad[num].geometry()).adjusted(5,5,-5,-5))
+        self.anim.setEndValue(QRect(self.numpadgeometry[num].adjusted(5,5,-5,-5)))
         self.anim.setDuration(50)
         self.anim.start()
         self.numpad[num].setStyleSheet("background-color: rgb(200, 200, 200);\ncolor: rgb(0, 0, 0);")
@@ -75,8 +131,13 @@ class Ui(QtWidgets.QMainWindow):
         self.numpad[num].setStyleSheet(self.numpadDefaultStyleSheet)
         if self.output.text() == "0":
             self.output.setText(str(num))
-        else:
+        elif len(self.output.text()) < 15: # check if textbox is available for another input(15 char. max.)
             self.output.setText(self.output.text() + str(num))
+
+    def cancelAndGoBack(self):
+        self.totalLabel.hide()
+        self.output.setStyleSheet("color: rgb(255, 255, 255);")
+        self.controlStack.setCurrentIndex(0)
 
     def num0press(self, event):
         self.numpadPress(0)
@@ -87,7 +148,7 @@ class Ui(QtWidgets.QMainWindow):
         self.anim.setDuration(100)
         self.anim.start()
         self.numpad[0].setStyleSheet(self.numpadDefaultStyleSheet)
-        if self.output.text() != "0":
+        if self.output.text() != "0" and len(self.output.text()) < 15: # check if textbox is available for another input(15 char. max.)
             self.output.setText(self.output.text() + "0")
     
     def num1press(self, event):
@@ -138,7 +199,7 @@ class Ui(QtWidgets.QMainWindow):
     def num10press(self, event):
         self.anim = QPropertyAnimation(self.numpad[10],b"geometry")
         self.anim.setStartValue(QRect(self.numpad[10].geometry()))
-        self.anim.setEndValue(QRect(self.numpad[10].geometry()).adjusted(5,5,-5,-5))
+        self.anim.setEndValue(QRect(self.numpadgeometry[10]).adjusted(5,5,-5,-5))
         self.anim.setDuration(50)
         self.anim.start()
         self.numpad[10].setStyleSheet("background-color: rgb(200, 200, 200);\ncolor: rgb(0, 0, 0);")
@@ -149,13 +210,13 @@ class Ui(QtWidgets.QMainWindow):
         self.anim.setDuration(100)
         self.anim.start()
         self.numpad[10].setStyleSheet(self.numpadDefaultStyleSheet)
-        if "." not in self.output.text():
+        if "." not in self.output.text() and len(self.output.text()) < 14: # check if textbox is available for another input(15 char. max.)
             self.output.setText(self.output.text() + ".")
     # 'clear'
     def num11press(self, event):
         self.anim = QPropertyAnimation(self.numpad[11],b"geometry")
         self.anim.setStartValue(QRect(self.numpad[11].geometry()))
-        self.anim.setEndValue(QRect(self.numpad[11].geometry()).adjusted(5,5,-5,-5))
+        self.anim.setEndValue(QRect(self.numpadgeometry[11]).adjusted(5,5,-5,-5))
         self.anim.setDuration(50)
         self.anim.start()
         self.numpad[11].setStyleSheet("background-color: rgb(200, 0, 0);\ncolor: rgb(200, 200, 200);")
@@ -171,7 +232,7 @@ class Ui(QtWidgets.QMainWindow):
     def num12press(self, event):
         self.anim = QPropertyAnimation(self.numpad[12],b"geometry")
         self.anim.setStartValue(QRect(self.numpad[12].geometry()))
-        self.anim.setEndValue(QRect(self.numpad[12].geometry()).adjusted(5,5,-5,-5))
+        self.anim.setEndValue(QRect(self.numpadgeometry[12]).adjusted(5,5,-5,-5))
         self.anim.setDuration(50)
         self.anim.start()
         self.numpad[12].setStyleSheet("background-color: rgb(197, 60, 0);\ncolor: rgb(200, 200, 200);")
@@ -182,9 +243,84 @@ class Ui(QtWidgets.QMainWindow):
         self.anim.setDuration(100)
         self.anim.start()
         self.numpad[12].setStyleSheet(self.numpadEnterDefaultStyleSheet)
+        
+        self.totalLabel.show()
+        self.output.setStyleSheet(self.numpadEnterDefaultStyleSheet)
+        # change controlStack Page
         self.controlStack.setCurrentIndex(1)
-        # WIP
+    
+    # controlStack p2
+    def setBtnPress(self,label):
+        label.setStyleSheet("color: rgb(54, 200, 255);background-color: rgba(0, 139, 255, 150);")
+    def setBtnRelease(self,label):
+        label.setStyleSheet("color: rgb(54, 200, 255);background-color: rgba(0, 139, 255, 0);")
 
+    def cashbnpress(self,event):
+        self.setBtnPress(self.cashbn)
+    def cashbnrelease(self,event):
+        self.setBtnRelease(self.cashbn)
+        self.controlStack.setCurrentIndex(2)
+    
+    def cardbnpress(self,event):
+        self.setBtnPress(self.cardbn)
+    def cardbnrelease(self,event):
+        self.setBtnRelease(self.cardbn)
+    
+    def othersbnpress(self,event):
+        self.setBtnPress(self.othersbn)
+    def othersbnrelease(self,event):
+        self.setBtnRelease(self.othersbn)
+
+    def cancelbnpress(self,event):
+        self.cancelbn.setStyleSheet("color: rgb(255, 26, 9);background-color: rgba(255, 0, 15, 150);")
+    def cancelbnrelease(self,event):
+        self.cancelbn.setStyleSheet("color: rgb(255, 26, 9);background-color: rgba(255, 0, 15, 0);")
+        self.cancelAndGoBack()
+    
+    def bn20press(self,event):
+        print("WIP")
+    def bn20release(self,event):
+        print("WIP")
+
+    def bn50press(self,event):
+        print("WIP")
+    def bn50release(self,event):
+        print("WIP")
+    
+    def bn100press(self,event):
+        print("WIP")
+    def bn100release(self,event):
+        print("WIP")
+    
+    def bn500press(self,event):
+        print("WIP")
+    def bn500release(self,event):
+        print("WIP")
+
+    def bn1000press(self,event):
+        print("WIP")
+    def bn1000release(self,event):
+        print("WIP")
+
+    def c1press(self,event):
+        print("WIP")
+    def c1release(self,event):
+        print("WIP")
+
+    def c2press(self,event):
+        print("WIP")
+    def c2release(self,event):
+        print("WIP")
+
+    def c5press(self,event):
+        print("WIP")
+    def c5release(self,event):
+        print("WIP")
+
+    def c10press(self,event):
+        print("WIP")
+    def c10release(self,event):
+        print("WIP")
 
 
 
