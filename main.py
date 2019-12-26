@@ -1,10 +1,12 @@
 from PyQt5 import QtTest, QtWidgets, uic
-from PyQt5.QtCore import QRect, QPropertyAnimation
+from PyQt5.QtCore import QEasingCurve, QPropertyAnimation, QRect
 from datetime import datetime
 import sys
 import csv
 import json
 import os
+from PyQt5.QtWidgets import QAbstractItemView, QGraphicsDropShadowEffect, QTableWidgetItem
+from PyQt5.QtGui import QColor
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
@@ -135,6 +137,23 @@ class Ui(QtWidgets.QMainWindow):
 
         # controlStack card page init.
         self.receiveCnt_card = self.findChild(QtWidgets.QLabel, 'receiveCnt_card')
+        self.cancelbn_card = self.findChild(QtWidgets.QLabel, 'cancelbn_card')
+        self.finishbn_card = self.findChild(QtWidgets.QLabel, 'finishbn_card')
+
+        self.cancelbn_card.mousePressEvent = self.cancelbn_cardpress
+        self.cancelbn_card.mouseReleaseEvent = self.cancelbn_cardrelease
+        self.finishbn_card.mousePressEvent = self.finishbn_cardpress
+        self.finishbn_card.mouseReleaseEvent = self.finishbn_cardrelease
+
+        # controlStack others page init.
+        self.receiveCnt_others = self.findChild(QtWidgets.QLabel, 'receiveCnt_others')
+        self.cancelbn_others = self.findChild(QtWidgets.QLabel, 'cancelbn_others')
+        self.finishbn_others = self.findChild(QtWidgets.QLabel, 'finishbn_others')
+
+        self.cancelbn_others.mousePressEvent = self.cancelbn_otherspress
+        self.cancelbn_others.mouseReleaseEvent = self.cancelbn_othersrelease
+        self.finishbn_others.mousePressEvent = self.finishbn_otherspress
+        self.finishbn_others.mouseReleaseEvent = self.finishbn_othersrelease
 
         # controlStack finish page init.
         self.gobackcount = self.findChild(QtWidgets.QLabel, 'gobackcount')
@@ -144,12 +163,34 @@ class Ui(QtWidgets.QMainWindow):
         self.newsession.mousePressEvent = self.newsessionpress
         self.newsession.mouseReleaseEvent = self.newsessionrelease
 
+        # pullDownBtn init.
+        self.pullDownbtn = self.findChild(QtWidgets.QLabel, 'pullDownbtn')
+        self.pullDownbtn.mousePressEvent = self.pullDownbtnpress
+        self.pullDownbtn.mouseReleaseEvent = self.pullDownbtnrelease
+
+        # mainCalculator init.
+        self.mainCalculator = self.findChild(QtWidgets.QWidget, 'mainCalculator')
 
         # read settings
         self.readSettings()
 
         # set controlStack
         self.controlStack.setCurrentIndex(0)
+
+        # check if the history is shown
+        self.ispullDown = False
+
+        # set drop shadow efect
+        # self.dropShadowEffect = QGraphicsDropShadowEffect(self)
+        # self.dropShadowEffect.setBlurRadius(5)
+        # self.dropShadowEffect.setColor(QColor(0,0,0))
+        # self.dropShadowEffect.setXOffset(-5)
+        # self.setGraphicsEffect(self.dropShadowEffect)
+
+        # history page init.
+        self.historyTable = self.findChild(QtWidgets.QTableWidget, 'historyTable')
+        self.noHistory = self.findChild(QtWidgets.QWidget, 'noHistory')
+        self.totalThisSession = self.findChild(QtWidgets.QLabel, 'totalThisSession')
 
         # show windows
         self.show()
@@ -161,9 +202,13 @@ class Ui(QtWidgets.QMainWindow):
 
         # set controlStack to 'start a new session' page if a session wasn't found.
         if not os.path.exists(self.settingsData[0]['save_dir'] + ".current"):
+            self.noHistory.show()
+            self.historyTable.hide()
             self.controlStack.setCurrentIndex(6)
         else:
-            self.loadSessionFile()
+            self.loadHistory()
+            self.getSessionTime()
+            self.output.setText("0")
         
         # assign bn,c geometry for animation
         self.bn20geometry = self.bn20.geometry()
@@ -175,6 +220,46 @@ class Ui(QtWidgets.QMainWindow):
         self.c2geometry = self.c2.geometry()
         self.c5geometry = self.c5.geometry()
         self.c10geometry = self.c10.geometry()
+
+        # historyTable init.
+        self.historyTable = self.findChild(QtWidgets.QTableWidget, 'historyTable')
+        self.historyTable.setHorizontalHeaderLabels(["Date","Time","Type","Total","Receive"])
+        self.historyTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.historyTable.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.historyTable.setColumnWidth(0,170)
+        self.historyTable.setColumnWidth(1,130)
+        self.historyTable.setColumnWidth(2,130)
+        self.historyTable.setColumnWidth(3,200)
+        self.historyTable.setColumnWidth(4,200)
+        self.historyTable.horizontalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\"; color: rgb(243, 243, 243); background-color: rgb(50, 50, 50);}")
+        self.historyTable.verticalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\";}")
+
+    def loadHistory(self):
+        file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","r")
+        reader = csv.reader(file,delimiter = ',')
+        self.historyTable.setRowCount(0)
+        self.historyTable.setColumnCount(5)
+        rowCnt = 0
+        total = 0
+        for row in reader:
+            if rowCnt <= 1:
+                rowCnt += 1
+                continue
+            self.historyTable.insertRow(self.historyTable.rowCount())
+            total += float(row[3])
+            for i in range(5):
+                self.historyTable.setItem(self.historyTable.rowCount() - 1,i,QTableWidgetItem(row[i]))
+            rowCnt += 1
+        if self.historyTable.rowCount() == 0:
+            self.historyTable.hide()
+            self.noHistory.show()
+            self.totalThisSession.hide()
+        else:
+            self.historyTable.show()
+            self.noHistory.hide()
+            self.totalThisSession.setText("Total this session: " + str(total))
+            self.totalThisSession.show()
+        file.close()
 
     def readSettings(self):
         if not os.path.exists("settings.json"):
@@ -200,7 +285,6 @@ class Ui(QtWidgets.QMainWindow):
         self.anim.setEndValue(QRect(self.numpadgeometry[num].adjusted(5,5,-5,-5)))
         self.anim.setDuration(1)
         self.anim.start()
-        # self.numpad[num].setGeometry(QRect(self.numpadgeometry[num]).adjusted(5,5,-5,-5))
         self.numpad[num].setStyleSheet("background-color: rgb(200, 200, 200);\ncolor: rgb(0, 0, 0);")
     def numpadRelease(self,num):
         self.anim = QPropertyAnimation(self.numpad[num],b"geometry")
@@ -367,6 +451,8 @@ class Ui(QtWidgets.QMainWindow):
         self.setBtnPress(self.othersbn)
     def othersbnrelease(self,event):
         self.setBtnRelease(self.othersbn)
+        self.controlStack.setCurrentIndex(4)
+        self.receiveCnt_others.setText(self.output.text())
 
     def cancelbnpress(self,event):
         self.cancelbn.setStyleSheet("color: rgb(255, 26, 9);background-color: rgba(255, 0, 15, 150);")
@@ -560,7 +646,31 @@ class Ui(QtWidgets.QMainWindow):
         self.finishbn_cash.setStyleSheet("color: rgb(80,216,144);background-color:rgba(0, 255, 0, 150);")
     def finishbn_cashrelease(self,event):
         self.finishbn_cash.setStyleSheet("color: rgb(80,216,144);background-color:rgba(0, 255, 0, 0);")
-        self.save('cash',float(self.output.text()),float(self.receiveCnt.text()))
+        self.save('Cash',float(self.output.text()),float(self.receiveCnt.text()))
+        self.goToFinishPage()
+
+    def cancelbn_cardpress(self,event):
+        self.cancelbn_card.setStyleSheet("color: rgb(255, 26, 9);background-color: rgba(255, 0, 15, 150);")
+    def cancelbn_cardrelease(self,event):
+        self.cancelbn_card.setStyleSheet("color: rgb(255, 26, 9);background-color: rgba(255, 0, 15, 0);")
+        self.cancelAndGoBack()
+    def finishbn_cardpress(self,event):
+        self.finishbn_card.setStyleSheet("color: rgb(80,216,144);background-color:rgba(0, 255, 0, 150);")
+    def finishbn_cardrelease(self,event):
+        self.finishbn_card.setStyleSheet("color: rgb(80,216,144);background-color:rgba(0, 255, 0, 0);")
+        self.save('Credit Card',float(self.output.text()),float(self.receiveCnt_card.text()))
+        self.goToFinishPage()
+
+    def cancelbn_otherspress(self,event):
+        self.cancelbn_others.setStyleSheet("color: rgb(255, 26, 9);background-color: rgba(255, 0, 15, 150);")
+    def cancelbn_othersrelease(self,event):
+        self.cancelbn_others.setStyleSheet("color: rgb(255, 26, 9);background-color: rgba(255, 0, 15, 0);")
+        self.cancelAndGoBack()
+    def finishbn_otherspress(self,event):
+        self.finishbn_others.setStyleSheet("color: rgb(80,216,144);background-color:rgba(0, 255, 0, 150);")
+    def finishbn_othersrelease(self,event):
+        self.finishbn_others.setStyleSheet("color: rgb(80,216,144);background-color:rgba(0, 255, 0, 0);")
+        self.save('Others',float(self.output.text()),float(self.receiveCnt_others.text()))
         self.goToFinishPage()
 
     def newsessionpress(self,event):
@@ -582,13 +692,15 @@ class Ui(QtWidgets.QMainWindow):
         writer.writerow([timestampDate,timestampTime,'sessionTimeStamp','0','0'])
         self.sessionTimeLabel.setText("Session: " + timestampDate + " at " + timestampTime)
         file.close()
-    def loadSessionFile(self):
+
+    def getSessionTime(self):
         file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","r")
         reader = csv.reader(file,delimiter = ',')
         rowCnt = 0
         for row in reader:
             if rowCnt == 1:
                 self.sessionTimeLabel.setText("Session: " + row[0] + " at " + row[1])
+                break
             rowCnt += 1
         file.close()
 
@@ -611,7 +723,6 @@ class Ui(QtWidgets.QMainWindow):
         self.output.setText("0")
         self.cancelAndGoBack()
 
-
     def receiveAmtUpdate(self):
         cnt = 0
         cnt += int(self.bncnt20.text()) * 20
@@ -625,6 +736,33 @@ class Ui(QtWidgets.QMainWindow):
         cnt += int(self.ccnt10.text()) * 10
         self.receiveCnt.setText(str(cnt))
         self.changeCnt.setText(str(cnt - float(self.output.text())))
+    
+    def pullDownbtnpress(self,event):
+        pass
+    def pullDownbtnrelease(self,event):
+        if not os.path.exists(self.settingsData[0]['save_dir'] + ".current"):
+            self.noHistory.show()
+            self.historyTable.hide()
+            self.cancelAndGoBack()
+            self.controlStack.setCurrentIndex(6)
+            self.output.setText("")
+            self.sessionTimeLabel.setText("")
+            self.totalThisSession.hide()
+        else:
+            self.loadHistory()
+
+        self.anim = QPropertyAnimation(self.mainCalculator,b"geometry")
+        self.anim.setStartValue(QRect(self.mainCalculator.geometry()))
+        if not self.ispullDown:
+            self.anim.setEndValue(QRect(0,700,1000,800))
+            self.ispullDown = True
+        else:
+            self.anim.setEndValue(QRect(0,0,1000,800))
+            self.ispullDown = False
+        self.anim.setDuration(1000)
+        self.anim.setEasingCurve(QEasingCurve.OutQuart)
+        self.anim.start()
+            
 
 
 
