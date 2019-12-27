@@ -192,6 +192,10 @@ class Ui(QtWidgets.QMainWindow):
         self.noHistory = self.findChild(QtWidgets.QWidget, 'noHistory')
         self.totalThisSession = self.findChild(QtWidgets.QLabel, 'totalThisSession')
 
+        self.historyTable.itemSelectionChanged.connect(self.historyTablepress)
+
+        self.rowsToDelete = []
+
         # show windows
         self.show()
 
@@ -233,6 +237,14 @@ class Ui(QtWidgets.QMainWindow):
         self.historyTable.setColumnWidth(4,200)
         self.historyTable.horizontalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\"; color: rgb(243, 243, 243); background-color: rgb(50, 50, 50);}")
         self.historyTable.verticalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\";}")
+    def historyTablepress(self):
+        select = self.historyTable.selectionModel()
+        self.rowsToDelete = []
+        if select.hasSelection():
+            for row in select.selectedRows():
+                self.rowsToDelete.append(row.row())
+        else:
+            self.rowsToDelete = []
 
     def loadHistory(self):
         file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","r")
