@@ -277,7 +277,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>700</y>
       <width>1000</width>
       <height>800</height>
      </rect>
@@ -4811,9 +4811,9 @@ background-color: rgba(255, 255, 255,0);</string>
      <widget class="QLabel" name="historyLabel_2">
       <property name="geometry">
        <rect>
-        <x>330</x>
+        <x>260</x>
         <y>290</y>
-        <width>231</width>
+        <width>371</width>
         <height>41</height>
        </rect>
       </property>
@@ -4924,9 +4924,9 @@ background-color: rgba(255, 255, 255, 0);</string>
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>110</y>
-       <width>221</width>
-       <height>31</height>
+       <y>100</y>
+       <width>241</width>
+       <height>41</height>
       </rect>
      </property>
      <property name="font">
