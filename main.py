@@ -5,8 +5,9 @@ import sys
 import csv
 import json
 import os
-from PyQt5.QtWidgets import QAbstractItemView, QGraphicsDropShadowEffect, QTableWidgetItem
+from PyQt5.QtWidgets import QAbstractItemView, QGraphicsDropShadowEffect, QGraphicsOpacityEffect, QTableWidgetItem
 from PyQt5.QtGui import QColor
+from shutil import copyfile
 
 class Ui(QtWidgets.QMainWindow):
     def __init__(self):
@@ -191,6 +192,16 @@ class Ui(QtWidgets.QMainWindow):
         self.historyTable = self.findChild(QtWidgets.QTableWidget, 'historyTable')
         self.noHistory = self.findChild(QtWidgets.QWidget, 'noHistory')
         self.totalThisSession = self.findChild(QtWidgets.QLabel, 'totalThisSession')
+        self.trashStack = self.findChild(QtWidgets.QStackedWidget, 'trashStack')
+        self.endsessionbtn = self.findChild(QtWidgets.QLabel, 'endsessionbtn')
+        self.trashbtn = self.findChild(QtWidgets.QLabel, 'trashbtn')
+
+        self.trashbtn.mousePressEvent = self.trashbtnpress
+        self.trashbtn.mouseReleaseEvent = self.trashbtnrelease
+
+        self.endsessionbtn.mousePressEvent = self.endsessionbtnpress
+        self.endsessionbtn.mouseReleaseEvent = self.endsessionbtnrelease
+        
 
         self.historyTable.itemSelectionChanged.connect(self.historyTablepress)
 
@@ -198,6 +209,7 @@ class Ui(QtWidgets.QMainWindow):
 
         # show windows
         self.show()
+        # historyTable init.
 
         # assign numpadgeometry value for animation
         self.numpadgeometry = []
@@ -205,7 +217,7 @@ class Ui(QtWidgets.QMainWindow):
             self.numpadgeometry.append(self.numpad[i].geometry())
 
         # set controlStack to 'start a new session' page if a session wasn't found.
-        if not os.path.exists(self.settingsData[0]['save_dir'] + ".current"):
+        if not os.path.exists(".current"):
             self.noHistory.show()
             self.historyTable.hide()
             self.controlStack.setCurrentIndex(6)
@@ -225,29 +237,19 @@ class Ui(QtWidgets.QMainWindow):
         self.c5geometry = self.c5.geometry()
         self.c10geometry = self.c10.geometry()
 
-        # historyTable init.
-        self.historyTable = self.findChild(QtWidgets.QTableWidget, 'historyTable')
-        self.historyTable.setHorizontalHeaderLabels(["Date","Time","Type","Total","Receive"])
-        self.historyTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.historyTable.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.historyTable.setColumnWidth(0,170)
-        self.historyTable.setColumnWidth(1,130)
-        self.historyTable.setColumnWidth(2,130)
-        self.historyTable.setColumnWidth(3,200)
-        self.historyTable.setColumnWidth(4,200)
-        self.historyTable.horizontalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\"; color: rgb(243, 243, 243); background-color: rgb(50, 50, 50);}")
-        self.historyTable.verticalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\";}")
     def historyTablepress(self):
         select = self.historyTable.selectionModel()
         self.rowsToDelete = []
         if select.hasSelection():
+            self.trashStack.setCurrentIndex(1)
             for row in select.selectedRows():
                 self.rowsToDelete.append(row.row())
         else:
+            self.trashStack.setCurrentIndex(0)
             self.rowsToDelete = []
 
     def loadHistory(self):
-        file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","r")
+        file = open(".current/currentData.csv","r")
         reader = csv.reader(file,delimiter = ',')
         self.historyTable.setRowCount(0)
         self.historyTable.setColumnCount(5)
@@ -266,12 +268,25 @@ class Ui(QtWidgets.QMainWindow):
             self.historyTable.hide()
             self.noHistory.show()
             self.totalThisSession.hide()
+            self.trashStack.hide()
         else:
             self.historyTable.show()
             self.noHistory.hide()
             self.totalThisSession.setText("Total this session: " + str(total))
             self.totalThisSession.show()
+            self.trashStack.show()
         file.close()
+        self.historyTable = self.findChild(QtWidgets.QTableWidget, 'historyTable')
+        self.historyTable.setHorizontalHeaderLabels(["Date","Time","Type","Total","Receive"])
+        self.historyTable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.historyTable.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.historyTable.setColumnWidth(0,170)
+        self.historyTable.setColumnWidth(1,130)
+        self.historyTable.setColumnWidth(2,130)
+        self.historyTable.setColumnWidth(3,200)
+        self.historyTable.setColumnWidth(4,200)
+        self.historyTable.horizontalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\"; color: rgb(243, 243, 243); background-color: rgb(50, 50, 50);}")
+        self.historyTable.verticalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\";}")
 
     def readSettings(self):
         if not os.path.exists("settings.json"):
@@ -694,8 +709,8 @@ class Ui(QtWidgets.QMainWindow):
         self.controlStack.setCurrentIndex(0)
 
     def createSessionFile(self):
-        os.makedirs(self.settingsData[0]['save_dir'] + ".current")
-        file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","a")
+        os.makedirs(".current")
+        file = open(".current/currentData.csv","a")
         writer = csv.writer(file,delimiter = ',')
         dateTimeObj = datetime.now()
         timestampDate = dateTimeObj.strftime("%d-%b-%Y")
@@ -706,7 +721,7 @@ class Ui(QtWidgets.QMainWindow):
         file.close()
 
     def getSessionTime(self):
-        file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","r")
+        file = open(".current/currentData.csv","r")
         reader = csv.reader(file,delimiter = ',')
         rowCnt = 0
         for row in reader:
@@ -717,7 +732,7 @@ class Ui(QtWidgets.QMainWindow):
         file.close()
 
     def save(self,typeName,totalAmt,receiveAmt):
-        file = open(str(self.settingsData[0]['save_dir']) + ".current/currentData.csv","a")
+        file = open(".current/currentData.csv","a")
         writer = csv.writer(file,delimiter = ',')
         dateTimeObj = datetime.now()
         timestampDate = dateTimeObj.strftime("%d-%b-%Y")
@@ -749,33 +764,97 @@ class Ui(QtWidgets.QMainWindow):
         self.receiveCnt.setText(str(cnt))
         self.changeCnt.setText(str(cnt - float(self.output.text())))
     
+    def endsessionbtnpress(self,event):
+        self.setBtnPress(self.endsessionbtn)
+    def endsessionbtnrelease(self,event):
+        self.setBtnRelease(self.endsessionbtn)
+        file = open(".current/currentData.csv","r")
+        reader = csv.reader(file,delimiter = ',')
+        total = 0
+        rowCount = 0
+        sessionDate = ""
+        sessionTime = ""
+        for row in reader:
+            if rowCount == 1:
+                sessionDate = row[0]
+                sessionTime = row[1]
+            if rowCount <= 1:
+                rowCount += 1
+                continue
+            total += float(row[3])
+            rowCount += 1
+        file.close()
+        i = 0
+        newSessionTime = ""
+        for i in sessionTime:
+            if i == ":":
+                newSessionTime += "_"
+            else:
+                newSessionTime += i
+        self.save('TOTAL',str(total),"-")
+        copyfile(".current/currentData.csv", str(self.settingsData[0]['save_dir']) + sessionDate + " " + newSessionTime + ".csv")
+        os.remove(".current/currentData.csv")
+        os.rmdir(".current")
+        self.resetAll()
+        self.pullDownbtnrelease(None)
+        
+    def resetAll(self):
+        self.noHistory.show()
+        self.historyTable.hide()
+        self.cancelAndGoBack()
+        self.controlStack.setCurrentIndex(6)
+        self.output.setText("")
+        self.sessionTimeLabel.setText("")
+        self.totalThisSession.hide()
+        self.trashStack.hide()
+        self.endsessionbtn.hide()
+
     def pullDownbtnpress(self,event):
         pass
     def pullDownbtnrelease(self,event):
-        if not os.path.exists(self.settingsData[0]['save_dir'] + ".current"):
-            self.noHistory.show()
-            self.historyTable.hide()
-            self.cancelAndGoBack()
-            self.controlStack.setCurrentIndex(6)
-            self.output.setText("")
-            self.sessionTimeLabel.setText("")
-            self.totalThisSession.hide()
+        if not os.path.exists(".current"):
+            self.resetAll()
         else:
+            self.trashStack.setCurrentIndex(0)
+            self.endsessionbtn.show()
+            self.trashStack.show()
+            self.totalThisSession.show()
             self.loadHistory()
-
-        self.anim = QPropertyAnimation(self.mainCalculator,b"geometry")
-        self.anim.setStartValue(QRect(self.mainCalculator.geometry()))
+        
+        self.anim2 = QPropertyAnimation(self.mainCalculator,b"geometry")
+        self.anim2.setStartValue(QRect(self.mainCalculator.geometry()))
         if not self.ispullDown:
-            self.anim.setEndValue(QRect(0,700,1000,800))
-            self.ispullDown = True
+            self.anim2.setEndValue(QRect(0,700,1000,800))
         else:
-            self.anim.setEndValue(QRect(0,0,1000,800))
-            self.ispullDown = False
-        self.anim.setDuration(1000)
-        self.anim.setEasingCurve(QEasingCurve.OutQuart)
-        self.anim.start()
-            
+            self.anim2.setEndValue(QRect(0,0,1000,800))
+        self.anim2.setDuration(700)
+        self.anim2.setEasingCurve(QEasingCurve.OutQuart)
+        self.anim2.start()
+        self.ispullDown = not self.ispullDown
 
+    def deleteHistoryTable(self):
+        lines = list()
+        rowCnt = -2
+        with open(".current/currentData.csv","r") as readFile:
+            reader = csv.reader(readFile)
+            for row in reader:
+                if rowCnt not in self.rowsToDelete:
+                    lines.append(row)
+                rowCnt += 1
+        with open(".current/currentData.csv","w") as writeFile:
+            writer = csv.writer(writeFile)
+            writer.writerows(lines)
+        self.loadHistory()
+        
+    def trashbtnpress(self,event):
+        self.trashbtn.setGeometry(QRect(12,2,23,23))
+    def trashbtnrelease(self,event):
+        self.anim = QPropertyAnimation(self.trashbtn,b"geometry")
+        self.anim.setStartValue(QRect(self.trashbtn.geometry()))
+        self.anim.setEndValue(QRect(10,0,30,30))
+        self.anim.setDuration(100)
+        self.anim.start()
+        self.deleteHistoryTable()
 
 
 app = QtWidgets.QApplication(sys.argv)

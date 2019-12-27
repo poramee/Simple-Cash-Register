@@ -277,7 +277,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>700</y>
+      <y>0</y>
       <width>1000</width>
       <height>800</height>
      </rect>
@@ -292,7 +292,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page_input">
       <widget class="QWidget" name="gridLayoutWidget">
@@ -4865,10 +4865,101 @@ background-color: rgba(255, 255, 255, 0);</string>
       <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
      </property>
     </widget>
+    <widget class="QStackedWidget" name="trashStack">
+     <property name="geometry">
+      <rect>
+       <x>890</x>
+       <y>110</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <widget class="QLabel" name="trashdisable">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>30</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>Resources/trash-disable.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <widget class="QLabel" name="trashbtn">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>30</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>Resources/trash-enable.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QLabel" name="endsessionbtn">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>110</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Avenir Next</family>
+       <pointsize>18</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(54, 200, 255);
+background-color: rgba(255, 255, 255, 0);</string>
+     </property>
+     <property name="text">
+      <string>End Current Session</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+     <property name="indent">
+      <number>-1</number>
+     </property>
+    </widget>
     <zorder>noHistory</zorder>
     <zorder>historyLabel</zorder>
     <zorder>totalThisSession</zorder>
     <zorder>historyTable</zorder>
+    <zorder>trashStack</zorder>
+    <zorder>endsessionbtn</zorder>
    </widget>
    <zorder>history</zorder>
    <zorder>mainCalculator</zorder>
