@@ -285,7 +285,7 @@ class Ui(QtWidgets.QMainWindow):
         self.historyTable.setColumnWidth(2,130)
         self.historyTable.setColumnWidth(3,200)
         self.historyTable.setColumnWidth(4,200)
-        self.historyTable.horizontalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\"; color: rgb(243, 243, 243); background-color: rgb(50, 50, 50);}")
+        self.historyTable.horizontalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\"; color: rgb(50, 50, 50);}")
         self.historyTable.verticalHeader().setStyleSheet("QHeaderView { font: 18pt \"Avenir Next\";}")
 
     def readSettings(self):
@@ -710,8 +710,8 @@ class Ui(QtWidgets.QMainWindow):
 
     def createSessionFile(self):
         os.makedirs(".current")
-        file = open(".current/currentData.csv","ab")
-        writer = csv.writer(file,delimiter = ',',lineterminator='/n')
+        file = open(".current/currentData.csv","a")
+        writer = csv.writer(file,delimiter = ',',lineterminator='\n')
         dateTimeObj = datetime.now()
         timestampDate = dateTimeObj.strftime("%d-%b-%Y")
         timestampTime = dateTimeObj.strftime("%H:%M:%S")
@@ -732,8 +732,8 @@ class Ui(QtWidgets.QMainWindow):
         file.close()
 
     def save(self,typeName,totalAmt,receiveAmt):
-        file = open(".current/currentData.csv","ab")
-        writer = csv.writer(file,delimiter = ',',lineterminator='/n')
+        file = open(".current/currentData.csv","a")
+        writer = csv.writer(file,delimiter = ',',lineterminator='\n')
         dateTimeObj = datetime.now()
         timestampDate = dateTimeObj.strftime("%d-%b-%Y")
         timestampTime = dateTimeObj.strftime("%H:%M:%S")
