@@ -842,7 +842,7 @@ class Ui(QtWidgets.QMainWindow):
                     lines.append(row)
                 rowCnt += 1
         with open(".current/currentData.csv","w") as writeFile:
-            writer = csv.writer(writeFile)
+            writer = csv.writer(writeFile,delimiter = ',',lineterminator='\n')
             writer.writerows(lines)
         self.loadHistory()
         
