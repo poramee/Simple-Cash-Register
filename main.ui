@@ -277,7 +277,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>700</y>
+      <y>0</y>
       <width>1000</width>
       <height>800</height>
      </rect>
@@ -292,7 +292,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page_input">
       <widget class="QWidget" name="gridLayoutWidget">
@@ -3206,7 +3206,7 @@ background-color: rgb(255, 255, 255);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>36</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -3234,9 +3234,8 @@ background-color: rgba(255, 255, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>50</weight>
-         <italic>false</italic>
          <bold>false</bold>
         </font>
        </property>
@@ -3269,7 +3268,7 @@ background-color: rgba(0, 139, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>50</weight>
          <bold>false</bold>
         </font>
@@ -3303,7 +3302,7 @@ background-color: rgba(255, 255, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>50</weight>
          <bold>false</bold>
         </font>
@@ -3460,7 +3459,7 @@ background-color: rgba(255, 255, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -3758,7 +3757,7 @@ background-color: rgba(255, 255, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>36</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -3786,7 +3785,7 @@ background-color: rgba(255, 255, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -3820,7 +3819,7 @@ background-color: rgba(255, 0, 15, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -4144,7 +4143,7 @@ background-color: rgba(0, 0, 0, 128);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>36</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -4172,7 +4171,7 @@ background-color: rgba(255, 255, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>24</pointsize>
+         <pointsize>18</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -4227,7 +4226,7 @@ background-color: rgba(255, 255, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -4261,7 +4260,7 @@ background-color:rgba(0, 255, 0, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -4297,7 +4296,7 @@ background-color: rgba(255, 0, 15, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>36</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -4325,7 +4324,7 @@ background-color: rgba(255, 255, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>24</pointsize>
+         <pointsize>18</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -4353,7 +4352,7 @@ background-color: rgba(255, 255, 255, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -4387,7 +4386,7 @@ background-color: rgba(255, 0, 15, 0);</string>
        <property name="font">
         <font>
          <family>Avenir Next</family>
-         <pointsize>30</pointsize>
+         <pointsize>24</pointsize>
          <weight>75</weight>
          <bold>true</bold>
         </font>
@@ -4628,10 +4627,10 @@ background-color: rgba(0, 139, 255, 0);</string>
      <widget class="QLabel" name="pullDownbtn">
       <property name="geometry">
        <rect>
-        <x>472</x>
+        <x>455</x>
         <y>10</y>
-        <width>70</width>
-        <height>20</height>
+        <width>91</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="autoFillBackground">
@@ -4662,7 +4661,7 @@ background-color: rgba(0, 139, 255, 0);</string>
       <property name="font">
        <font>
         <family>Avenir Next</family>
-        <pointsize>36</pointsize>
+        <pointsize>24</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
@@ -4729,7 +4728,7 @@ background-color: rgba(255, 255, 255, 0);</string>
      <property name="font">
       <font>
        <family>Avenir Next</family>
-       <pointsize>36</pointsize>
+       <pointsize>24</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
