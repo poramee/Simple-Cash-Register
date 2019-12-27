@@ -710,8 +710,8 @@ class Ui(QtWidgets.QMainWindow):
 
     def createSessionFile(self):
         os.makedirs(".current")
-        file = open(".current/currentData.csv","a")
-        writer = csv.writer(file,delimiter = ',')
+        file = open(".current/currentData.csv","ab")
+        writer = csv.writer(file,delimiter = ',',lineterminator='/n')
         dateTimeObj = datetime.now()
         timestampDate = dateTimeObj.strftime("%d-%b-%Y")
         timestampTime = dateTimeObj.strftime("%H:%M:%S")
@@ -732,8 +732,8 @@ class Ui(QtWidgets.QMainWindow):
         file.close()
 
     def save(self,typeName,totalAmt,receiveAmt):
-        file = open(".current/currentData.csv","a",newline='')
-        writer = csv.writer(file,delimiter = ',')
+        file = open(".current/currentData.csv","ab")
+        writer = csv.writer(file,delimiter = ',',lineterminator='/n')
         dateTimeObj = datetime.now()
         timestampDate = dateTimeObj.strftime("%d-%b-%Y")
         timestampTime = dateTimeObj.strftime("%H:%M:%S")

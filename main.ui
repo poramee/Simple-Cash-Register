@@ -277,7 +277,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>700</y>
       <width>1000</width>
       <height>800</height>
      </rect>
@@ -3197,9 +3197,9 @@ background-color: rgb(255, 255, 255);</string>
       <widget class="QLabel" name="paymentMethodLabel">
        <property name="geometry">
         <rect>
-         <x>210</x>
+         <x>180</x>
          <y>110</y>
-         <width>611</width>
+         <width>671</width>
          <height>41</height>
         </rect>
        </property>
@@ -4655,7 +4655,7 @@ background-color: rgba(0, 139, 255, 0);</string>
        <rect>
         <x>20</x>
         <y>70</y>
-        <width>141</width>
+        <width>221</width>
         <height>41</height>
        </rect>
       </property>
@@ -4721,9 +4721,9 @@ background-color: rgba(255, 255, 255, 0);</string>
      <property name="geometry">
       <rect>
        <x>55</x>
-       <y>40</y>
-       <width>171</width>
-       <height>41</height>
+       <y>30</y>
+       <width>251</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="font">
@@ -4742,7 +4742,7 @@ background-color: rgba(255, 255, 255, 0);</string>
       <string>HISTORY</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
      </property>
     </widget>
     <widget class="QTableWidget" name="historyTable">
@@ -4840,7 +4840,7 @@ background-color: rgba(255, 255, 255, 0);</string>
     <widget class="QLabel" name="totalThisSession">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>310</x>
        <y>40</y>
        <width>581</width>
        <height>41</height>
@@ -4925,7 +4925,7 @@ background-color: rgba(255, 255, 255, 0);</string>
       <rect>
        <x>60</x>
        <y>110</y>
-       <width>171</width>
+       <width>221</width>
        <height>31</height>
       </rect>
      </property>
