@@ -732,7 +732,7 @@ class Ui(QtWidgets.QMainWindow):
         file.close()
 
     def save(self,typeName,totalAmt,receiveAmt):
-        file = open(".current/currentData.csv","a")
+        file = open(".current/currentData.csv","a",newline='')
         writer = csv.writer(file,delimiter = ',')
         dateTimeObj = datetime.now()
         timestampDate = dateTimeObj.strftime("%d-%b-%Y")
